@@ -1,0 +1,15 @@
+import { HTML_URL, CHROME, SHOTS } from './_env.mjs';
+import { chromium } from 'playwright';
+const b = await chromium.launch({ executablePath: CHROME, args:['--use-fake-ui-for-media-stream','--use-fake-device-for-media-stream','--autoplay-policy=no-user-gesture-required'] });
+const ctx = await b.newContext({ permissions:['microphone'], acceptDownloads:true }); const p = await ctx.newPage();
+const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+await p.goto(HTML_URL);
+await p.fill('#bpmDisplay','120'); await p.press('#bpmDisplay','Enter'); await p.selectOption('#countInSel','1'); await p.fill('#manualBars','1');
+console.log('export disabled before:', await p.isDisabled('#exportBtn'));
+await p.click('#startBtn'); await p.waitForTimeout(5500); await p.waitForFunction(()=>!app.S.running); await p.waitForTimeout(1500);
+console.log('export enabled after:', !(await p.isDisabled('#exportBtn')));
+const [dl] = await Promise.all([p.waitForEvent('download'), p.click('#exportBtn')]);
+const path = await dl.path(); const fs = await import('fs'); const st = fs.statSync(path);
+console.log('file:', dl.suggestedFilename(), st.size, 'bytes; header:', fs.readFileSync(path).subarray(0,4).toString());
+await p.click('#resetBtn'); console.log('export disabled after clear:', await p.isDisabled('#exportBtn'));
+console.log('errors:', errs); await b.close();

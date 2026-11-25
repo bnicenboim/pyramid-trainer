@@ -1,0 +1,13 @@
+import { HTML_URL, CHROME, SHOTS } from './_env.mjs';
+import { chromium } from 'playwright';
+const b = await chromium.launch({ executablePath: CHROME });
+const ctx = await b.newContext(); const p = await ctx.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+const url=HTML_URL;
+await p.goto(url);
+console.log('defaults: countIn', await p.inputValue('#countInSel'), '| minutes', await p.inputValue('#maxMinutes'), '| bars wrap visible', !(await p.isHidden('#stopBarsWrap')));
+await p.fill('#bpmDisplay','77'); await p.press('#bpmDisplay','Enter'); await p.click('#modeAuto'); await p.selectOption('#countInSel','4'); await p.fill('#maxMinutes','12'); await p.press('#maxMinutes','Tab');
+await p.uncheck('#stepPick input[data-divs="3"]'); await p.selectOption('#progMode','up5'); await p.selectOption('#roundCountInSel','2');
+await p.click('#modeManual'); await p.click('#subdivRow .step-btn[data-divs="2"]'); await p.click('#modeAuto');
+await p.reload();
+console.log('restored: bpm', await p.evaluate(()=>app.S.bpm), '| auto', await p.evaluate(()=>app.S.autoMode), '| countIn', await p.inputValue('#countInSel'), '| minutes', await p.inputValue('#maxMinutes'), '| seq', await p.evaluate(()=>app.S.PYRAMID_SEQ.join(',')), '| prog', await p.inputValue('#progMode'), '| roundCI', await p.inputValue('#roundCountInSel'), '| subdiv', await p.evaluate(()=>app.manualSubdiv()), '| rounds wrap visible', !(await p.isHidden('#stopRoundsWrap')));
+console.log('errors:', errs); await b.close();

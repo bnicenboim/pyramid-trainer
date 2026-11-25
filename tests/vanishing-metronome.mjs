@@ -1,0 +1,21 @@
+import { HTML_URL, CHROME, SHOTS } from './_env.mjs';
+import { chromium } from 'playwright';
+const b = await chromium.launch({ executablePath: CHROME, args:['--use-fake-ui-for-media-stream','--use-fake-device-for-media-stream','--autoplay-policy=no-user-gesture-required'] });
+const ctx = await b.newContext({ permissions:['microphone'] }); const p = await ctx.newPage();
+const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+await p.goto(HTML_URL);
+await p.evaluate(()=>localStorage.clear()); await p.reload();
+await p.fill('#bpmDisplay','240'); await p.press('#bpmDisplay','Enter'); await p.selectOption('#countInSel','1');
+await p.selectOption('#clickModeSel','vanish'); console.log('vanish row visible:', !(await p.isHidden('#vanishRow')), '| unit:', await p.textContent('#vanishUnit'));
+await p.fill('#vanishStay','1'); await p.press('#vanishStay','Tab'); await p.selectOption('#vanishTo','e4_1'); await p.fill('#manualBars','9'); await p.press('#manualBars','Tab'); await p.fill('#maxMinutes','0'); await p.press('#maxMinutes','Tab');
+await p.click('#startBtn'); await p.waitForFunction(()=>app.S.running); await p.waitForFunction(()=>!app.S.running,{timeout:30000}); await p.waitForTimeout(500);
+const bars = await p.evaluate(()=>{ const ex = app.S.beatLog.filter(b=>!b.ci); const out=[]; let cur=null; for (const b of ex) { if (b.bar) { cur=[]; out.push(cur); } cur.push(b.clicked?'x':'.'); } return out.map(r=>r.join('')).join(' '); });
+console.log('manual, stay 1 bar, down to stage 4:', bars);
+console.log('status under dots:', await p.evaluate(()=>app.statusMsg.compareDocumentPosition(app.beatTrack) & Node.DOCUMENT_POSITION_PRECEDING ? 'yes' : 'no'), '| dots option default:', await p.isChecked('#dotsClickedOnly'), '| final status:', await p.textContent('#statusMsg'));
+// auto mode: stay 1 round, 1 bar per step, quarter+eighth only, 4 rounds
+await p.click('#modeAuto'); await p.uncheck('#stepPick input[data-divs="3"]'); await p.uncheck('#stepPick input[data-divs="4"]'); await p.selectOption('#barsPerStep','1'); await p.fill('#maxRounds','4'); await p.press('#maxRounds','Tab');
+console.log('unit now:', await p.textContent('#vanishUnit'));
+await p.click('#startBtn'); await p.waitForFunction(()=>app.S.running); await p.waitForFunction(()=>!app.S.running,{timeout:40000}); await p.waitForTimeout(500);
+const bars2 = await p.evaluate(()=>{ const ex = app.S.beatLog.filter(b=>!b.ci); const out=[]; let cur=null; for (const b of ex) { if (b.bar) { cur=[]; out.push(cur); } cur.push(b.clicked?'x':'.'); } return out.map(r=>r.join('')).join(' '); });
+console.log('auto, stay 1 round (3 bars each):', bars2); console.log('clickLbl cleared:', (await p.textContent('#clickLbl'))==='');
+console.log('errors:', errs); await b.close();
