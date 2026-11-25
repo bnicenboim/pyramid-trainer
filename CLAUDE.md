@@ -11,12 +11,15 @@ index.html            markup; loads style.css and js/main.js
 style.css             all CSS
 js/                   the app as ES modules (see the code map below); js/main.js is the entry point
 js/core/              signal processing and scoring, with no page access (runs in Node too)
-js/version.js         the version shown at the bottom of the page; bump it with an entry in CHANGELOG.md
+js/version.js         the version shown at the bottom of the page; bump it together with package.json, with an entry in CHANGELOG.md
 build.mjs             joins everything into one file → dist/pyramid.html and dist/index.html (not checked in)
 package.json          scripts: build, serve, test, check
 tests/                Playwright scripts (headless Chromium with a fake microphone), plus Node-only tests of js/core
 tests/_env.mjs        serves the app on a local port for the tests; `spy()`; PYRAMID_HTML, PW_CHROME, SHOTS_DIR env overrides
 tests/run-all.mjs     runs every test, reports failures
+README.md, LICENSE, favicon.svg, docs/analysis.png (screenshot in the README)
+.nojekyll             GitHub Pages serves the repository root as is
+.github/workflows/check.yml   on every push: syntax check, build, and the Node-only tests
 CLAUDE.md             this file
 ```
 

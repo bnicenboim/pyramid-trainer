@@ -1,0 +1,14 @@
+name: check
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run check
+      - run: npm run build
+      # The tests of js/core need no browser. The browser tests run real-time sessions and are run by hand.
+      - run: node tests/run-all.mjs core align-unit

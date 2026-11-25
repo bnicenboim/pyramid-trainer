@@ -23,6 +23,9 @@ const fns = [...js.matchAll(/^(?:async )?function (\w+)/gm)].map(m => m[1]);
 const dup = fns.find((n, i) => fns.indexOf(n) !== i);
 if (dup) throw new Error(`function ${dup} is declared in two modules`);
 
+const version = js.match(/const VERSION = '(.+)';/)[1];
+if (version !== JSON.parse(read('package.json')).version) throw new Error('js/version.js and package.json disagree on the version');
+
 const html = read('index.html');
 const title = html.match(/<title>.*<\/title>/)[0];
 const fonts = html.match(/<link [^>]*fonts\.googleapis[^>]*>/)[0];
@@ -32,5 +35,5 @@ const fragment =
   `${title}\n<meta name="claude:viewport-fit-sides" content="cover">\n${fonts}\n<style>\n${read('style.css')}</style>\n\n${body}\n\n<script>\n${js}</script>\n`;
 fs.writeFileSync(path.join(root, 'dist/pyramid.html'), fragment);
 fs.writeFileSync(path.join(root, 'dist/index.html'),
-  `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n</head>\n<body>\n${fragment}</body>\n</html>\n`);
+  `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<link rel="icon" href="data:image/svg+xml,${encodeURIComponent(read('favicon.svg'))}">\n</head>\n<body>\n${fragment}</body>\n</html>\n`);
 console.log('wrote dist/pyramid.html and dist/index.html');
