@@ -259,7 +259,7 @@ bpmDisplay.addEventListener('change', saveSettings);
 $('modeManual').addEventListener('click', saveSettings);
 $('modeAuto').addEventListener('click', saveSettings);
 $('subdivRow').querySelectorAll('.step-btn').forEach(b => b.addEventListener('click', saveSettings));
-$('versionLbl').textContent = `Pyramid Trainer v${VERSION}`;
+$('versionLbl').textContent = `Pyramid Trainer v${VERSION}, vibe coded with Claude`;
 
 // Handle for the tests and the browser console
 window.app = { S, finalizeRecording, analyzeTiming, alignByRecordedClicks, $, recPanel, setTransportEnabled, setView, renderWave, resetBtn, recIndicator, playClick, synthClick, logCsv, statusMsg, waveCanvas, pollSessionLevel, manualSubdiv, countdownOverlay, playbackTone, beatTrack };
