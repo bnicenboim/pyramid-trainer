@@ -26,8 +26,41 @@ bpmSlider.addEventListener('input', () => { S.bpm = +bpmSlider.value; bpmDisplay
 bpmSlider.addEventListener('change', () => setBpm(+bpmSlider.value));
 bpmDisplay.addEventListener('change', () => { setBpm(+bpmDisplay.value || S.bpm); bpmDisplay.value = S.bpm; });
 bpmDisplay.addEventListener('keydown', e => { if (e.key === 'Enter') bpmDisplay.blur(); });
-$('bpmDn').addEventListener('click', () => setBpm(S.bpm - 5));
-$('bpmUp').addEventListener('click', () => setBpm(S.bpm + 5));
+// − and +: one step per press; holding repeats, slowly at first and then faster.
+// While held, the steps are quiet so a running metronome restarts its grid once, on release.
+function holdToStep(btn, dir) {
+  let timer = null, from = 0;
+  const end = () => {
+    if (timer === null) return;
+    clearTimeout(timer); timer = null;
+    if (S.bpm !== from) { setBpm(S.bpm); saveSettings(); }
+  };
+  btn.addEventListener('pointerdown', e => {
+    if (e.button) return;
+    from = S.bpm;
+    let n = 0;
+    const step = () => { setBpm(S.bpm + dir, true); n++; timer = setTimeout(step, n < 2 ? 400 : n < 12 ? 110 : 45); };
+    step();
+  });
+  for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) btn.addEventListener(ev, end);
+  btn.addEventListener('contextmenu', e => e.preventDefault()); // a long press on a phone
+  btn.addEventListener('click', e => { if (e.detail === 0) { setBpm(S.bpm + dir); saveSettings(); } }); // keyboard
+}
+holdToStep($('bpmDn'), -1);
+holdToStep($('bpmUp'), 1);
+
+// Tap tempo: the mean of the last four gaps between taps. A gap longer than 20 bpm starts over.
+let tapTimes = [];
+$('bpmTap').addEventListener('pointerdown', e => {
+  if (e.button) return;
+  const now = performance.now();
+  if (tapTimes.length && now - tapTimes[tapTimes.length - 1] > 3100) tapTimes = [];
+  tapTimes.push(now);
+  tapTimes = tapTimes.slice(-5);
+  if (tapTimes.length < 2) return;
+  setBpm(60000 * (tapTimes.length - 1) / (now - tapTimes[0]));
+  saveSettings();
+});
 
 // Mode toggle
 $('modeManual').addEventListener('click', () => {

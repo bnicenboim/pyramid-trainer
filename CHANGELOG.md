@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0 (2026-11-26)
+
+- Start and Pause sit directly under the tempo.
+- The tempo buttons move in steps of 1 and repeat while held, and a Tap button sets the tempo from your taps.
+- The page fits a phone screen, with larger text and larger tempo buttons.
+- The hosted site counts page visits with GoatCounter (no cookies, no personal data).
+
 ## 1.0.0 (2026-11-25)
 
 - The app is split into `index.html`, `style.css`, and modules in `js/`, so it can be hosted as a regular site.

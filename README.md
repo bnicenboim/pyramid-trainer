@@ -14,7 +14,7 @@ Use Chrome or Edge. Other browsers run the app but cannot choose the output devi
 
 ## Privacy
 
-The recording, the takes history, and the CSV log stay in your browser. Nothing is uploaded. The only outside request the page makes is loading its fonts from Google Fonts.
+The recording, the takes history, and the CSV log stay in your browser and are never uploaded. The site counts page visits with GoatCounter, which sets no cookies and collects no personal data. The page makes two outside requests: its fonts from Google Fonts and the visit counter.
 
 ## Running it locally
 

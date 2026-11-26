@@ -1,6 +1,6 @@
 {
   "name": "pyramid-trainer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Practice the guitar pyramid exercise against a metronome and see how early or late every note was",
   "license": "MIT",
   "private": true,

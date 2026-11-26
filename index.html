@@ -8,6 +8,8 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css">
+<script data-goatcounter="https://pyramid-trainer.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
@@ -27,7 +29,7 @@
       <li><b>Sixteenths:</b> "1 e + a 2 e + a…" — say <em>one-ee-and-uh two-ee-and-uh</em>, four even syllables per beat</li>
     </ul>
     Start slowly (40–60 BPM). Count aloud for one pass before picking. With <em>Record</em> on, the session is recorded; afterwards the waveform of your guitar is shown against the subdivision grid, and you can listen back to hear where each note landed. <b>Play the click through your speakers</b> and keep the microphone on: the mic records the click next to your guitar, and the count-in clicks (heard with no guitar yet) anchor the grid of the recording exactly, so there is nothing to calibrate. With headphones, or with a direct input such as an audio interface, the input never hears the click: the app tells you right after the count-in, and places the grid from the delay the audio system reports instead (usually within ~10 ms, so spreads, drift and position comparisons are still meaningful, but a lean of a few ms is not). If you use an interface and want an exact grid, put a microphone on the input and the click on speakers for the session. Use <em>Auto pyramid</em> mode to cycle through the full sequence automatically.<br><br>
-    <strong style="color:var(--fg)">Privacy:</strong> the recording, the takes history and the CSV log stay in your browser. Nothing is uploaded.<br><br>
+    <strong style="color:var(--fg)">Privacy:</strong> the recording, the takes history and the CSV log stay in your browser and are never uploaded. The site counts page visits with GoatCounter, which sets no cookies and collects no personal data.<br><br>
     This app was vibe coded with Claude.
   </div>
 
@@ -37,9 +39,15 @@
     <input class="bpm-val" id="bpmDisplay" type="number" min="20" max="220" value="50" title="Type a tempo (20–220)">
     <input type="range" id="bpmSlider" min="20" max="220" value="50">
     <div class="pm-btns">
-      <button id="bpmDn">−</button>
-      <button id="bpmUp">+</button>
+      <button id="bpmDn" title="One slower; hold to keep going">−</button>
+      <button id="bpmUp" title="One faster; hold to keep going">+</button>
+      <button id="bpmTap" class="tap" title="Tap the tempo you want a few times">Tap</button>
     </div>
+  </div>
+
+  <div class="controls transport">
+    <button class="btn btn-start" id="startBtn">Start</button>
+    <button class="btn btn-pause btn-sm" id="pauseBtn" disabled>⏸ Pause</button>
   </div>
 
   <!-- Mode toggle -->
@@ -226,8 +234,6 @@
     <button class="btn btn-secondary" id="csvBtn" disabled title="Download the CSV log of all analyzed takes (one row per beat).">Download CSV</button>
     <button class="btn btn-secondary" id="exportBtn" disabled title="Save the recording (what the mic heard: your guitar and the click) as a 16-bit WAV file.">Export WAV</button>
     <button class="btn btn-secondary" id="resetBtn" disabled title="Forget the recording. During a session: throw away what was recorded so far and keep recording from now.">Clear recording</button>
-    <button class="btn btn-pause btn-sm" id="pauseBtn" disabled>⏸ Pause</button>
-    <button class="btn btn-start" id="startBtn">Start</button>
   </div>
 
   <!-- Recording panel -->
